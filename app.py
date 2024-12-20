@@ -195,6 +195,9 @@ def submit():
         chatgpt_output=chatgpt_output,
         userDetails=userDetails
     )
+@app.route('/option1')
+def option1():
+    return render_template('option1.html')
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)

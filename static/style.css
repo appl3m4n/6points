@@ -255,3 +255,163 @@ th {
 .login-btn:hover {
     background-color: #2980b9;
 }
+
+#chatbot-boxes {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two boxes per row */
+    gap: 20px; /* Space between the boxes */
+    margin: 20px auto;
+    width: 85%;
+    max-width: 1000px; /* Set a maximum width */
+}
+
+.box {
+    background-color: #fff;
+    padding: 40px; /* Increase padding for larger boxes */
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.box-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.box-image {
+    width: 150px; /* Larger images */
+    height: 150px;
+    object-fit: contain;
+    margin-bottom: 20px;
+}
+
+.box h2 {
+    font-size: 24px; /* Larger title font */
+    margin: 10px 0;
+    color: #333;
+}
+
+.box p {
+    font-size: 18px; /* Larger description font */
+    color: #666;
+}
+
+/* Force 2x2 grid on all devices */
+@media only screen and (max-width: 600px) {
+    #chatbot-boxes {
+        grid-template-columns: 1fr 1fr; /* Always two boxes per row */
+    }
+
+    .box {
+        padding: 30px; /* Adjust padding for smaller screens */
+    }
+}
+
+/* General Styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
+}
+
+/* Title Section */
+#new-title {
+    background-color: #3498db;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    color: #fff;
+}
+
+.new-menu-title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.new-image-container {
+    display: flex;
+    align-items: center;
+}
+
+.new-logo1,
+.new-logo2 {
+    height: 40px;
+    width: auto;
+}
+
+/* Welcome Section */
+#new-welcome {
+    text-align: center;
+    font-size: 18px;
+    color: #333;
+    margin: 20px 0;
+}
+
+/* Seven Boxes Section */
+#seven-boxes-new {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+}
+
+.new-box {
+    background-color: #fff;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    width: calc(50% - 20px); /* 2 boxes per row */
+}
+
+/* First Box (Summary) */
+.new-large-box {
+    width: 100%; /* Full width */
+    text-align: left;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.new-large-box .new-box-image {
+    width: 150px;
+    height: auto;
+    border-radius: 8px;
+}
+
+.new-large-box .new-box-content {
+    flex: 1;
+}
+
+/* Small Boxes (Key Points) */
+.new-small-box {
+    font-size: 16px;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .new-box {
+        width: 100%; /* Single column layout on small screens */
+    }
+
+    .new-large-box {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .new-large-box .new-box-image {
+        width: 100px;
+        margin-bottom: 10px;
+    }
+}
