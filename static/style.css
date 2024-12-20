@@ -451,3 +451,49 @@ body {
         font-size: 10px; /* Even smaller title on mobile */
     }
 }
+/* Expandable key point boxes */
+.key-point-description {
+    display: none; /* Initially hidden */
+    font-size: 16px;
+    line-height: 1.6;
+    margin-top: 10px;
+    color: #666;
+}
+
+/* Styling for the "Read More" button */
+.expand-btn {
+    display: inline-block;
+    padding: 1px 4px; /* Smaller padding for a smaller button */
+    font-size: 10px;  /* Smaller font size */
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    opacity: 0.5; /* Less visible by default */
+    cursor: pointer;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    margin-top: 10px; /* Space between the description and button */
+    margin-bottom: 10px; /* Additional space for button */
+}
+
+/* Make the button more visible when hovered */
+.expand-btn:hover {
+    opacity: 1;
+    transform: scale(1.1); /* Slightly increase the size on hover */
+}
+
+/* Ensure the button is positioned within each box */
+.new-box.new-small-box {
+    position: relative; /* Make the container a relative position context */
+}
+
+/* Center the button horizontally and position it closer to the text */
+.new-box.new-small-box .expand-btn {
+    position: absolute;
+    bottom: 10px; /* Position the button closer to the bottom of the box */
+    left: 50%;
+    transform: translateX(-50%); /* Horizontal centering */
+}
+
+/* Ensure key point description box has posi
