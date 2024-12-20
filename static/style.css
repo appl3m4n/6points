@@ -362,7 +362,10 @@ body {
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
-    padding: 20px;
+    padding-top: 0px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    padding-left: 20px;
 }
 
 .new-box {
@@ -387,6 +390,7 @@ body {
 .new-large-box .new-box-image {
     width: 150px;
     height: auto;
+    
     border-radius: 8px;
 }
 
@@ -413,5 +417,37 @@ body {
     .new-large-box .new-box-image {
         width: 100px;
         margin-bottom: 10px;
+    }
+}
+/* Styling for the key points title */
+.key-point-title {
+    background-color: #dcdcdc; /* Light gray background */
+    font-size: 12px; /* Very small text */
+    color: #333; /* Darker text color */
+    padding: 5px;
+    text-align: center;
+    border-radius: 4px;
+    margin-bottom: 10px; /* Space between the title and content */
+}
+
+/* Ensure that key points boxes take up the same width as the large box */
+.new-box.new-small-box {
+    width: 100%; /* Make the box as wide as the large box */
+    text-align: left; /* Align text to the left */
+    padding: 20px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 0px; /* Add space between boxes */
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 600px) {
+    .new-box.new-small-box {
+        width: 100%; /* Full width on small screens */
+    }
+
+    .key-point-title {
+        font-size: 10px; /* Even smaller title on mobile */
     }
 }
