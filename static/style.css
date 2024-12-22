@@ -500,4 +500,89 @@ body {
     transform: translateX(-50%); /* Horizontal centering */
 }
 
-/* Ensure key point description box has posi
+.login-prompt {
+    background-color: #f4f4f4; /* Light gray background for contrast */
+    border: 2px solid #ddd; /* Subtle border */
+    border-radius: 12px; /* Smooth corners */
+    padding: 20px; /* Add some spacing inside */
+    text-align: center; /* Center-align text and content */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Add depth with shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effects */
+    max-width: 400px; /* Limit width for a more compact look */
+    margin: 20px auto; /* Center the div horizontally and vertically */
+}
+
+.login-prompt:hover {
+    transform: translateY(-5px); /* Lift the div slightly on hover */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Enhance shadow effect on hover */
+}
+
+.login-prompt p {
+    font-size: 18px; /* Slightly larger text for better readability */
+    color: #555; /* Neutral gray color for the text */
+    margin-bottom: 15px; /* Space between text and button */
+}
+
+.login-prompt .login-btn {
+    font-size: 16px; /* Comfortable font size */
+    padding: 12px 24px; /* Balanced padding for the button */
+    background-color: #3498db; /* Primary blue color */
+    color: #fff; /* White text */
+    border: none; /* Remove border */
+    border-radius: 8px; /* Smooth corners */
+    text-decoration: none; /* Remove underline */
+    display: inline-block; /* Inline button styling */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth hover effects */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Button shadow */
+    cursor: pointer; /* Indicate clickability */
+}
+
+.login-prompt .login-btn:hover {
+    background-color: #2c3e50; /* Darker blue on hover */
+    transform: scale(1.05); /* Slightly enlarge the button */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+.logout-section {
+    background-color: #f9f9f9; /* Light background color for the section */
+    border: 2px solid #ddd; /* Light border for separation */
+    border-radius: 12px; /* Rounded corners for smooth design */
+    padding: 20px; /* Padding to add space inside */
+    text-align: center; /* Center-align content */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover transition */
+    max-width: 400px; /* Limit the width for a compact look */
+    margin: 20px auto; /* Center the div */
+}
+
+.logout-section:hover {
+    transform: translateY(-5px); /* Lift the section on hover */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* More shadow on hover */
+}
+
+.logout-section p {
+    font-size: 18px; /* Font size for the welcome text */
+    color: #555; /* Gray text color for better contrast */
+    margin-bottom: 15px; /* Space between text and button */
+}
+
+.logout-section .logout-btn {
+    font-size: 16px; /* Size of the button text */
+    padding: 12px 24px; /* Adequate padding for the button */
+    background-color: #e74c3c; /* Red color for the logout button */
+    color: #fff; /* White text */
+    border: none; /* No border around the button */
+    border-radius: 8px; /* Rounded corners */
+    text-decoration: none; /* Remove underline */
+    display: inline-block; /* Make the button behave like a block element */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth hover transition */
+    cursor: pointer; /* Cursor indicating the button is clickable */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Button shadow */
+}
+
+.logout-section .logout-btn:hover {
+    background-color: #c0392b; /* Darker red on hover */
+    transform: scale(1.05); /* Slightly enlarge the button */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+

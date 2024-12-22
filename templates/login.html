@@ -17,41 +17,46 @@
             </a>
         </div>
         <div class="image-container right-align">
-            <a href="/login" class="image-link">
-                <img src="static/icon-profile.png" alt="Profile Icon" class="logo2">
-            </a>
+            <!-- Only show the profile icon if the user is not logged in -->
+            
+                <a href="/login" class="image-link">
+                    <img src="static/icon-profile.png" alt="Profile Icon" class="logo2">
+                </a>
+            
         </div>
     </div>
 
     <div id="form">
-        <h2>Login</h2>
-        <form method="POST" action="">
-            {{ form.hidden_tag() }}
-            <label for="username">Username:</label>
-            {{ form.username }}
-            
-            <label for="password">Password:</label>
-            {{ form.password }}
-            
-            <input type="submit" value="Login">
-        </form>
-
-        <!--{% if current_user.is_authenticated %}
-        <div id="output">
-            <h3>Welcome back, {{ current_user.username }}!</h3>
-            <a href="{{ url_for('logout') }}" class="btn">Logout</a>
-        </div>
-        {% else %}
-        <div id="output">
-            <h3>Welcome, Guest!</h3>
-            <a href="{{ url_for('login') }}" class="btn">Login</a>
-        </div>
-        {% endif %}-->
-
-        <div id="signup"> 
-            <p>Don't have an account? <a href="{{ url_for('register') }}" class="btn">Sign Up</a></p>
-        </div>
+        <!-- If the user is logged in, show their username and logout option -->
+        {% if current_user.is_authenticated %}
         
+            <h2>Welcome, {{ current_user.username }}!</h2>
+            <div class="logout-section">
+                
+                <form action="{{ url_for('logout') }}" method="POST">
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+            </div>
+            <p> <br>
+                </p>
+        {% else %}
+            <!-- If the user is not logged in, show the login form -->
+            <h2>Login</h2>
+            <form method="POST" action="">
+                {{ form.hidden_tag() }}
+                <label for="username">Username:</label>
+                {{ form.username }}
+                
+                <label for="password">Password:</label>
+                {{ form.password }}
+                
+                <input type="submit" value="Login">
+            </form>
+            <div id="signup"> 
+            <p>Don't have an account? <a href="{{ url_for('register') }}" class="btn">Sign Up</a></p>
+            </div>
+        {% endif %}
+       
     </div>
 </body>
 

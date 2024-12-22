@@ -197,7 +197,8 @@ def submit():
     )
 @app.route('/option1')
 def option1():
-    return render_template('option1.html')
+    return render_template('option1.html', current_user=current_user)
+
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
