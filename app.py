@@ -159,6 +159,21 @@ def register():
 def option1():
     return render_template('option1.html', current_user=current_user)
 
+@app.route('/subscribe', methods=['POST'])
+@login_required
+def subscribe():
+    # Handle the payment and subscription logic here (e.g., integrate with a payment gateway)
+    
+    # For now, we simulate a successful payment process
+    # You can integrate with a payment API like Stripe, PayPal, etc.
+    
+    # For this example, assume the payment is successful
+    flash("Payment successful! You are now subscribed.", "success")
+    
+    # After the subscription, you can redirect the user to the main page or a new page
+    return redirect(url_for('index'))
+
+
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
