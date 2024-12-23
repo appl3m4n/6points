@@ -1,9 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
-import json
-import os
 import pymysql
-import openai
-from difflib import get_close_matches
+
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
@@ -11,11 +8,6 @@ from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
-
-# OpenAI API key
-str1 = 'sk-proj-Vbn3Wjz2xzY7khGJWJxasOD8xjJH39q63rqlE6KHISQMdYWVkS_'
-str2 = '36EWwvVbrp8LGwn_poZyz7ZT3BlbkFJB_VX9c2D_kT2TQJvRYdm1F2RmItabpz4NxTuovFG9qK-'
-str3 = 'x6c6zT_783BTo0Mf_rf6QiOizb7TEA'
 
 # Database configuration
 db_user = "root"
@@ -122,79 +114,6 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
-# Load knowledge base from JSON file
-def load_knowledge_base(file_path: str):
-    try:
-        with open(file_path, 'r') as file:
-            return json.load(file)
-    except FileNotFoundError:
-        return {"questions": []}
-
-# Utility functions for knowledge base matching
-def find_best_match(user_question: str, questions: list[str]):
-    matches = get_close_matches(user_question, questions, n=1, cutoff=0.6)
-    return matches[0] if matches else None
-
-def get_answer_for_question(question: str, knowledge_base: dict):
-    for q in knowledge_base["questions"]:
-        if q["question"] == question:
-            return q["answer"]
-    return None
-
-def get_link_for_question(question: str, knowledge_base: dict):
-    for q in knowledge_base["questions"]:
-        if q["question"] == question:
-            return q.get("link")
-    return None
-
-# Routes for OpenAI integration
-@app.route('/')
-def index():
-    return render_template('index_open.html')
-
-@app.route('/submit', methods=['POST'])
-def submit():
-    chatgpt_input = request.form['chatgpt']
-    selected_option = request.form['dropdownBox']
-    chatgpt_output = ""
-
-    if selected_option == 'option1':  # OpenAI ChatGPT model
-        openai.api_key = str1 + str2 + str3
-        completion = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": chatgpt_input}]
-        )
-        chatgpt_output = completion.choices[0].message.content
-    elif selected_option == 'option2':  # JSON-based chatbot
-        knowledge_base = load_knowledge_base("knowledge_base.json")
-        best_match = find_best_match(chatgpt_input, [q["question"] for q in knowledge_base["questions"]])
-
-        if best_match:
-            answer = get_answer_for_question(best_match, knowledge_base)
-            chatgpt_output = answer or 'I don\'t know the answer.'
-        else:
-            chatgpt_output = 'I don\'t know the answer.'
-    else:
-        chatgpt_output = 'Model not selected'
-
-    connection = get_db_connection()
-    try:
-        with connection.cursor() as cursor:
-            cursor.execute("INSERT INTO users_gpt (input, output) VALUES (%s, %s)", (chatgpt_input, chatgpt_output))
-            connection.commit()
-
-            # Retrieve last 5 entries
-            cursor.execute("SELECT * FROM users_gpt ORDER BY id DESC LIMIT 5")
-            userDetails = cursor.fetchall()
-    finally:
-        connection.close()
-
-    return render_template(
-        'index_submit.html',
-        chatgpt_input=chatgpt_input,
-        chatgpt_output=chatgpt_output,
-        userDetails=userDetails
-    )
 @app.route('/option1')
 def option1():
     return render_template('option1.html', current_user=current_user)
