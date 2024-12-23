@@ -42,14 +42,18 @@
         {% else %}
             <!-- If the user is not logged in, show the login form -->
             <h2>Login</h2>
-            <form method="POST" action="">
+            <!-- Display error message -->
+            {% if error %}
+                <div class="error-message">{{ error }}</div>
+            {% endif %}
+            <form method="POST" action="" novalidate>
                 {{ form.hidden_tag() }}
                 <label for="username">Username:</label>
                 {{ form.username }}
-                
+            
                 <label for="password">Password:</label>
                 {{ form.password }}
-                
+            
                 <input type="submit" value="Login">
             </form>
             <div id="signup"> 

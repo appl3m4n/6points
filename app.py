@@ -83,19 +83,34 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    if form.validate_on_submit():
-        connection = get_db_connection()
-        try:
-            with connection.cursor() as cursor:
-                cursor.execute("SELECT * FROM login WHERE username = %s", (form.username.data,))
-                user_data = cursor.fetchone()
-            if user_data and bcrypt.check_password_hash(user_data['password'], form.password.data):
-                user = User(user_data['id'], user_data['username'], user_data['password'])
-                login_user(user)
-                return redirect(url_for('index'))
-        finally:
-            connection.close()
-    return render_template('login.html', form=form)
+    error = None  # Variable to store the error message
+    if request.method == 'POST':  # Check if the form is submitted
+        username = form.username.data
+        password = form.password.data
+
+        # Custom validation for username and password length
+        if len(username) < 4:
+            error = "Username must be at least 4 characters long."
+        elif len(password) < 8:
+            error = "Password must be at least 8 characters long."
+        else:
+            connection = get_db_connection()
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute("SELECT * FROM login WHERE username = %s", (username,))
+                    user_data = cursor.fetchone()
+                if user_data and bcrypt.check_password_hash(user_data['password'], password):
+                    user = User(user_data['id'], user_data['username'], user_data['password'])
+                    login_user(user)
+                    return redirect(url_for('index'))
+                else:
+                    error = "Invalid username or password."
+            finally:
+                connection.close()
+
+    return render_template('login.html', form=form, error=error)
+
+
 
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
@@ -106,17 +121,39 @@ def logout():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
-    if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        connection = get_db_connection()
-        try:
-            with connection.cursor() as cursor:
-                cursor.execute("INSERT INTO login (username, password) VALUES (%s, %s)", (form.username.data, hashed_password))
-                connection.commit()
-        finally:
-            connection.close()
-        return redirect(url_for('login'))
-    return render_template('register.html', form=form)
+    error = None  # Variable to store the error message
+    if request.method == 'POST':  # Check if the form is submitted
+        username = form.username.data
+        password = form.password.data
+
+        # Debugging: Print inputs
+        print(f"Username: {username}, Password: {password}")
+
+        # Custom validation for username and password length
+        if len(username) < 4:
+            error = "Username must be at least 4 characters long."
+        elif len(password) < 8:
+            error = "Password must be at least 8 characters long."
+        else:
+            connection = get_db_connection()
+            try:
+                with connection.cursor() as cursor:
+                    # Check if the username already exists
+                    cursor.execute("SELECT * FROM login WHERE username = %s", (username,))
+                    existing_user = cursor.fetchone()
+                    if existing_user:
+                        error = "That username already exists. Please choose a different one."
+                    else:
+                        # Hash the password and save the user in the database
+                        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+                        cursor.execute("INSERT INTO login (username, password) VALUES (%s, %s)", (username, hashed_password))
+                        connection.commit()
+                        print("User successfully registered!")  # Debugging
+                        return redirect(url_for('login'))
+            finally:
+                connection.close()
+        print(f"Error: {error}")  # Debugging
+    return render_template('register.html', form=form, error=error)
 
 @app.route('/option1')
 def option1():

@@ -148,10 +148,6 @@ th {
     border-collapse: collapse;
 }
 
-#output_table, th, td {
-    /*border: 2px solid #ddd;*/
-}
-
 th, td {
     padding: 16px; /* Adjusted padding */
     text-align: left;
@@ -208,7 +204,7 @@ th {
     color: #2c3e50;
 }
 
-/* Flex container for the welcome message and buttons */
+ Flex container for the welcome message and buttons 
 #welcome {
     display: flex;
     align-items: center;
@@ -587,3 +583,167 @@ body {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
 }
 
+.error-message {
+    background-color: #ffe6e6; /* Light red background for error */
+    border: 2px solid #ffcccc; /* Light red border */
+    border-radius: 12px; /* Rounded corners for smooth design */
+    padding: 15px; /* Padding inside the message box */
+    text-align: center; /* Center-align text */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover transition */
+    max-width: 400px; /* Limit width for compact design */
+    margin: 20px auto; /* Center the error message */
+    font-size: 16px; /* Font size for readability */
+    color: #a94442; /* Dark red text for the error message */
+}
+
+.error-message:hover {
+    transform: translateY(-3px); /* Lift the message box slightly on hover */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+/* Footer Styling */
+.footer {
+    background-color: #f8f8f8; /* Light background color */
+    padding: 20px 0;
+    width: 100%;
+    position: relative;
+    bottom: 0;
+    border-top: 1px solid white; /* Add a subtle white border at the top of the footer */
+}
+
+/* Footer Content */
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+}
+
+.footer-left, .footer-right {
+    display: flex;
+    align-items: center;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the profile info horizontally */
+}
+
+.profile-img {
+    margin-right: 10px;
+}
+
+.profile-pic {
+    width: 30px; /* Reduced profile picture size */
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-name {
+    font-weight: normal; /* Remove bold */
+    font-size: 14px; /* Set the same font size as the links */
+    color: #555; /* Same color as the links */
+}
+
+.footer-links {
+    display: flex;
+    gap: 20px;
+    justify-content: center; /* Center the links horizontally */
+}
+
+.footer-link {
+    text-decoration: none;
+    color: #555;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+    color: #000;
+}
+
+.footer-bottom {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #888;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Ensure footer text stays at the bottom of the page */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+footer {
+    margin-top: auto;
+}
+
+/* Mobile and small screen layout adjustments */
+@media (max-width: 768px) {
+    /* For smaller screens, the footer-left (profile info) and footer-right (links) will stack and be centered */
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer-left, .footer-right {
+        width: 100%;
+        margin-bottom: 10px; /* Add spacing between sections */
+        justify-content: center; /* Center the content inside each section */
+    }
+
+    /* Footer Links should appear first in the line on small screens */
+    .footer-right {
+        order: -1; /* Change order so that the links are at the top on small screens */
+    }
+
+    .footer-bottom {
+        margin-top: 10px;
+    }
+}
+
+/* Welcome Section Styling */
+.welcome-message {
+    font-size: 1rem; /* Smaller size */
+    font-weight: bold;
+    color: #333; /* Dark text for visibility */
+    text-align: center;
+    margin: 0 auto;
+    padding: 5px 20px; /* Smaller padding */
+    width: 60%; /* Make the div smaller */
+    position: relative;
+    opacity: 0; /* Initially hidden */
+    transform: translateY(-30px); /* Start from above */
+    animation: slideDown 1s ease-out forwards; /* Slide down animation */
+}
+
+/* Animation for the welcome section sliding down */
+@keyframes slideDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px); /* Start from above */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0); /* End at original position */
+    }
+}
+
+/* Responsive Styling for Mobile Screens */
+@media (max-width: 768px) {
+    .welcome-message {
+        width: 80%; /* Make the div slightly bigger on mobile */
+        font-size: 1rem; /* Smaller font size for mobile */
+    }
+}
