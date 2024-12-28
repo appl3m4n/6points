@@ -181,6 +181,10 @@ def option1():
 def option2():
     return render_template('option2.html', current_user=current_user)
 
+@app.route('/option3')
+def option3():
+    return render_template('option3.html', current_user=current_user)
+
 @app.route('/subscribe', methods=['POST'])
 @login_required
 def subscribe():
