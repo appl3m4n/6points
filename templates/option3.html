@@ -23,7 +23,6 @@
         /* Upload container styles */
         #upload-container {
             text-align: center;
-            /*margin-top: 20px;*/
             display: inline-block;
         }
 
@@ -36,7 +35,7 @@
         #image-upload-btn {
             display: inline-block;
             padding: 15px 30px;
-            background-color: #4CAF50; /* Green background */
+            background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 50px;
@@ -46,35 +45,29 @@
             text-transform: uppercase;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
             transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
-            min-width: 200px; /* Ensure it has the same width as the select button */
+            min-width: 200px;
             text-align: center;
         }
 
-        /* Hover effects for the custom upload button */
+        /* Hover effect for the upload button */
         #image-upload-btn:hover {
             background-color: #45a049;
             transform: scale(1.05);
             box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
         }
 
-        /* Disabled state for the button */
-        #image-upload-btn:disabled {
-            background-color: #ddd;
-            cursor: not-allowed;
-        }
-
         /* Button container to display buttons side by side */
         .button-container {
             display: flex;
             justify-content: center;
-            gap: 20px; /* space between the buttons */
+            gap: 20px;
             margin-top: 20px;
         }
 
-        /* Button for selecting best image */
+        /* Button for selecting best image with animation */
         #select-btn {
             padding: 15px 30px;
-            background-color: #3498db; /* Blue background */
+            background-color: #3498db;
             color: white;
             border: none;
             border-radius: 50px;
@@ -83,7 +76,7 @@
             cursor: pointer;
             text-transform: uppercase;
             transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
-            min-width: 200px; /* Ensure it has the same width as the upload button */
+            min-width: 200px;
             text-align: center;
         }
 
@@ -92,34 +85,57 @@
             transform: scale(1.05);
         }
 
-        /* Disabled state for the select button */
-        #select-btn:disabled {
-            background-color: #ddd;
-            cursor: not-allowed;
-        }
-
         /* Image container as a grid with 2 columns */
         #image-container {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2 columns */
-            gap: 20px; /* space between the images */
-            justify-items: center; /* center images within their grid cells */
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            justify-items: center;
             margin-top: 20px;
         }
 
-        /* Ensure uploaded images have the same size and are bigger */
+        /* Ensure uploaded images have the same size */
+        .uploaded-image-wrapper {
+            position: relative;
+        }
+
         .uploaded-image {
-            width: 250px; /* Increased size */
-            height: 250px; /* Increased size */
-            object-fit: cover; /* Ensures the images maintain their aspect ratio and fill the square */
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
             border-radius: 8px;
-            transition: transform 0.3s ease; /* Smooth transition effect */
+            transition: transform 0.3s ease;
         }
 
         /* Highlight the selected image */
         .highlighted {
-            border: 4px solid #f1c40f; /* Golden border to highlight the image */
-            transform: scale(1.1); /* Slightly increase size to make it stand out */
+            border: 4px solid #f1c40f;
+            transform: scale(1.1);
+        }
+
+        /* Download logo (visible only when selected) */
+        .download-logo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 30px;
+            height: 30px;
+            background-image: url('static/download-icon.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            cursor: pointer;
+            display: none; /* Hidden by default */
+            transition: transform 0.2s ease, opacity 0.3s ease; /* Smooth transition for hover and click effect */
+        }
+
+        /* Hover effect for the download logo */
+        .download-logo:hover {
+            transform: scale(1.2); /* Scale up effect when hovered */
+        }
+
+        /* Active effect for the download logo when clicked */
+        .download-logo:active {
+            transform: scale(1.1); /* Slightly reduce size on click for feedback */
         }
 
         /* Footer styles */
@@ -127,7 +143,7 @@
             background-color: #f1f1f1;
             padding: 20px;
             text-align: center;
-            margin-top: auto; /* Pushes the footer to the bottom of the page */
+            margin-top: auto;
         }
 
         .footer-content {
@@ -154,6 +170,8 @@
 
 <script>
 // JavaScript for image upload and random selection
+let lastSelectedImage = null; // To keep track of the last selected image
+
 function handleImageUpload(event) {
     const files = event.target.files;
     const imageContainer = document.getElementById("image-container");
@@ -163,11 +181,22 @@ function handleImageUpload(event) {
 
     // Display uploaded images
     for (let i = 0; i < files.length; i++) {
+        const wrapper = document.createElement("div");
+        wrapper.classList.add("uploaded-image-wrapper");
+
         const img = document.createElement("img");
         img.src = URL.createObjectURL(files[i]);
         img.classList.add("uploaded-image");
         img.setAttribute("data-index", i); // Add index for reference
-        imageContainer.appendChild(img);
+        wrapper.appendChild(img);
+
+        // Add download logo
+        const downloadLogo = document.createElement("div");
+        downloadLogo.classList.add("download-logo");
+        downloadLogo.onclick = function () { downloadImage(img); };
+        wrapper.appendChild(downloadLogo);
+
+        imageContainer.appendChild(wrapper);
     }
 
     // Enable random selection after 4 images are uploaded
@@ -182,11 +211,37 @@ function selectRandomImage() {
     const randomIndex = Math.floor(Math.random() * images.length);
     const selectedImage = images[randomIndex];
 
-    // Remove the highlighted class from all images
-    images.forEach(img => img.classList.remove("highlighted"));
+    // Remove the highlight from the previous selected image if it exists
+    if (lastSelectedImage) {
+        lastSelectedImage.classList.remove("highlighted");
+        const prevWrapper = lastSelectedImage.closest('.uploaded-image-wrapper');
+        const prevDownloadLogo = prevWrapper.querySelector(".download-logo");
+        if (prevDownloadLogo) {
+            prevDownloadLogo.style.display = "none"; // Hide previous download logo
+        }
+    }
 
     // Highlight the selected image
     selectedImage.classList.add("highlighted");
+
+    // Show the download button (logo)
+    const wrapper = selectedImage.closest('.uploaded-image-wrapper');
+    const downloadLogo = wrapper.querySelector(".download-logo");
+    if (downloadLogo) {
+        downloadLogo.style.display = "block"; // Show download logo
+    }
+
+    // Save the reference of the selected image for future unhighlighting
+    lastSelectedImage = selectedImage;
+}
+
+// Function to download the selected image when the logo is clicked
+function downloadImage(image) {
+    const imageSrc = image.src;
+    const link = document.createElement('a');
+    link.href = imageSrc;
+    link.download = 'selected-image.jpg'; // Change filename as needed
+    link.click();
 }
 </script>
 
@@ -209,19 +264,17 @@ function selectRandomImage() {
     <main>
         <!-- Welcome message -->
         <div id="welcome" class="welcome-message">
-            <p>Upload 4 pics and we will choose the best one for Tinder</p>
+            <p>Upload profile photos and our hand-crafted AI will choose the best one for Tinder</p>
         </div>
 
         <!-- Button container to hold buttons in the same row -->
         <div class="button-container">
             <!-- Image upload section -->
             <div id="upload-container">
-                <!-- File input button hidden, label acts as custom upload button -->
                 <input type="file" id="image-upload" class="image-upload" accept="image/*" multiple onchange="handleImageUpload(event)">
                 <label for="image-upload" id="image-upload-btn">Upload Images</label>
             </div>
 
-            <!-- Button to select random image -->
             <button id="select-btn" disabled onclick="selectRandomImage()">Select Best Image</button>
         </div>
 
@@ -232,7 +285,6 @@ function selectRandomImage() {
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
-            <!-- Left Section (Profile Info) -->
             <div class="footer-left">
                 <div class="profile-info">
                     <div class="profile-img">
@@ -244,7 +296,6 @@ function selectRandomImage() {
                 </div>
             </div>
 
-            <!-- Right Section (Footer Links) -->
             <div class="footer-right">
                 <div class="footer-links">
                     <a href="/privacy" class="footer-link">Privacy Policy</a>
@@ -253,8 +304,7 @@ function selectRandomImage() {
                 </div>
             </div>
         </div>
-        
-        <!-- Footer Text Section (Centered) -->
+
         <div class="footer-bottom">
             <p>&copy; 2025 6 Points AI Generator</p>
         </div>
