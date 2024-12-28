@@ -257,7 +257,7 @@ th {
     display: grid;
     grid-template-columns: 1fr 1fr; /* Two boxes per row */
     gap: 20px; /* Space between the boxes */
-    margin: 20px auto;
+    margin: 0px auto 20px auto;
     width: 85%;
     max-width: 1000px; /* Set a maximum width */
 }
@@ -359,8 +359,8 @@ body {
     flex-direction: column; /* Stack the sections vertically */
     align-items: center; /* Center the content */
     gap: 20px;
-    padding: 20px;
-    margin: 20px auto;
+    /*padding: 20px;*/
+    margin: 0px auto 20px auto;
     width: 85%;
     max-width: 1000px;
 }
