@@ -159,6 +159,10 @@ def register():
 def option1():
     return render_template('option1.html', current_user=current_user)
 
+@app.route('/option2')
+def option2():
+    return render_template('option2.html', current_user=current_user)
+
 @app.route('/subscribe', methods=['POST'])
 @login_required
 def subscribe():

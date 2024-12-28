@@ -810,3 +810,23 @@ footer {
     transform: scale(1.05);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
 }
+
+/* Seven Boxes Section VIDEO*/
+#seven-boxes-video {
+    display: flex;
+    flex-direction: column; /* Stack the sections vertically */
+    align-items: center; /* Center the content */
+    gap: 20px;
+    margin: 0px auto 20px auto;
+    width: 85%;
+    max-width: 1000px;
+}
+
+/* First Box (Summary) */
+.new-large-box-video {
+    width: 100%; /* Full width */
+    /*text-align: left;*/
+    /*display: flex;*/
+    gap: 20px;
+    align-items: center;
+}

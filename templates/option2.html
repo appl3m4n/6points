@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="/static/style.css">
+    <title>6 Points AI Generator</title>
+</head>
+
+<script>
+// JavaScript to toggle expansion
+function toggleExpand(id) {
+    const keyPoint = document.getElementById(id);
+    const description = keyPoint.querySelector('.key-point-description');
+    
+    // Toggle the visibility of the description
+    if (description.style.display === "none" || description.style.display === "") {
+        description.style.display = "block";
+        keyPoint.querySelector('.expand-btn').textContent = "Read Less"; // Change button text
+    } else {
+        description.style.display = "none";
+        keyPoint.querySelector('.expand-btn').textContent = "Read More"; // Change button text
+    }
+}
+</script>
+
+<body>
+    <header>
+        <div id="title">
+            <div class="image-container">
+                <a href="/" class="image-link">
+                    <img src="static/logo.png" alt="Home Logo" class="logo1">
+                </a>
+            </div>
+            <div class="image-container">
+                <a href="/login" class="image-link">
+                    <img src="static/icon-profile.png" alt="Profile Icon" class="logo2">
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Welcome message -->
+        <div id="welcome" class="welcome-message">
+            <p>Discover key insights and actions that drive results.</p>
+        </div>
+
+        <!-- Boxes Section -->
+        <section id="seven-boxes-video">
+            <!-- Embedded Video -->
+            <article class="new-box new-large-box-video">
+                <div class="new-box-video-wrapper">
+                    <iframe class="new-box-video" src="https://www.youtube.com/embed/jFNdARDCrKA?si=2-9NdVnebPVg4c-k" 
+                            title="YouTube video player" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            referrerpolicy="strict-origin-when-cross-origin" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+
+                <div class="new-box-content">
+                    <h2>Rich Dad Poor Dad</h2>
+                    <p>
+                        by Robert Kiyosaki contrasts the financial philosophies of two father figures: his biological father (Poor Dad) and his best friend's father (Rich Dad). Poor Dad values traditional education, working hard, and saving money, while Rich Dad emphasizes financial education, entrepreneurship, and investing. Kiyosaki argues that true financial success comes from acquiring assets that generate passive income, not relying on earned income from a job. He stresses the importance of financial literacy and learning how money works. The book encourages taking risks, learning from failures, and investing in businesses, real estate, and assets for long-term wealth. Kiyosaki criticizes the traditional school system for not teaching practical financial skills. He introduces the "cash flow quadrant," which categorizes people into employees, self-employed, business owners, and investors. Ultimately, the book promotes pursuing financial independence through education, smart investments, and entrepreneurial thinking.
+                    </p>
+                </div>
+            </article>
+                     
+            <!-- Key Points Section -->
+            <article class="new-box new-small-box" id="key-point-1">
+                <div class="key-point-title">Key Point 1</div>
+                <h3>Financial Education is Key</h3>
+                <p class="key-point-description" style="display: block;">
+                    Kiyosaki stresses that understanding how money works is more crucial than formal education or working a traditional job. He believes that most schools do not teach students how to manage money or build wealth. Financial education involves learning about accounting, investing, marketing, and how to control cash flow. By increasing financial literacy, individuals can make smarter decisions about their money and create wealth in ways that a traditional job cannot.
+                </p>
+            </article>
+
+            <article class="new-box new-small-box" id="key-point-2">
+                <div class="key-point-title">Key Point 2</div>
+                <h3>Assets vs. Liabilities</h3>
+                <p class="key-point-description">
+                    One of the main concepts in Rich Dad Poor Dad is the distinction between assets and liabilities. Kiyosaki defines assets as things that put money in your pocket, like real estate or stocks that generate income. Liabilities, on the other hand, take money out of your pocket, such as a mortgage or car loan. He urges readers to focus on accumulating assets and reducing liabilities to build lasting wealth. A common mistake is accumulating liabilities thinking they are assets, like buying expensive cars or homes that do not generate income.
+                </p>
+                <button class="expand-btn" onclick="toggleExpand('key-point-2')">Read More</button>
+            </article>
+            
+            <!-- Conditional Rendering for Logged-in Users -->
+            {% if current_user.is_authenticated %}
+            <article class="new-box new-small-box" id="key-point-3">
+                <div class="key-point-title">Key Point 3</div>
+                <h3>The Cash Flow Quadrant</h3>
+                <p class="key-point-description">
+                    Kiyosaki introduces the idea of the Cash Flow Quadrant, which divides people into four categories: Employees (E), Self-Employed (S), Business Owners (B), and Investors (I). Employees trade time for money, self-employed individuals work for themselves but still trade time for money, business owners leverage systems and people to generate income, and investors make their money work for them. Kiyosaki advocates for transitioning from the left side (E and S) to the right side (B and I) to achieve financial independence, as business owners and investors can generate passive income and grow their wealth over time.
+                </p>
+                <button class="expand-btn" onclick="toggleExpand('key-point-3')">Read More</button>
+            </article>
+
+            <article class="new-box new-small-box" id="key-point-4">
+                <div class="key-point-title">Key Point 4</div>
+                <h3>The Importance of Entrepreneurship</h3>
+                <p class="key-point-description">
+                    Kiyosaki believes entrepreneurship is the key to creating lasting wealth. Unlike employees, entrepreneurs and business owners have the opportunity to create systems, scale their operations, and earn income through their ventures. He emphasizes the importance of starting small, thinking big, and being willing to take risks. Even if you don’t own a business, investing in businesses and real estate is essential to financial growth. Developing an entrepreneurial mindset allows people to recognize opportunities for growth and wealth that others may overlook.
+                </p>
+                <button class="expand-btn" onclick="toggleExpand('key-point-4')">Read More</button>
+            </article>
+
+            <article class="new-box new-small-box" id="key-point-5">
+                <div class="key-point-title">Key Point 5</div>
+                <h3>Taking Risks and Learning from Failure</h3>
+                <p class="key-point-description">
+                    Kiyosaki encourages readers to take calculated risks, as avoiding risks often leads to missed opportunities. He believes that fear of failure keeps many people from achieving financial success. Instead of fearing failure, Kiyosaki promotes learning from mistakes and using them as stepping stones toward success. He argues that the most successful people are those who failed multiple times but persevered and learned from their experiences. The book teaches that risk is an essential part of achieving financial freedom and growth.
+                </p>
+                <button class="expand-btn" onclick="toggleExpand('key-point-5')">Read More</button>
+            </article>
+
+            <!-- Key Point 6 is intentionally hidden for all users -->
+            <div class="key-point-hidden" id="key-point-6">
+                <p>This key point is not available to you.</p>
+            </div>
+
+             <!-- Subscription Section Below -->
+            <div class="subscription-section">
+                <p>Welcome, {{ current_user.username }}!</p>
+                <form action="{{ url_for('subscribe') }}" method="POST">
+                    <button type="submit" class="subscribe-btn">$1.99/month</button>
+                </form>
+            </div>
+
+            {% else %}
+            <div class="login-prompt">
+                <p>Log in to access more insights and key points.</p>
+                <a href="/login" class="login-btn">Login for More Content</a>
+            </div>
+            {% endif %}
+
+        </section>
+         <!-- Footer -->
+         <footer class="footer">
+            <div class="footer-content">
+                <!-- Left Section (Profile Info) -->
+                <div class="footer-left">
+                    <div class="profile-info">
+                        <div class="profile-img">
+                            <img src="static/profile.png" alt="Profile Picture" class="profile-pic">
+                        </div>
+                        <div class="profile-name">
+                            created by <strong>Roman Hrdlovic</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Section (Footer Links) -->
+                <div class="footer-right">
+                    <div class="footer-links">
+                        <a href="/privacy" class="footer-link">Privacy Policy</a>
+                        <a href="/terms" class="footer-link">Terms of Service</a>
+                        <a href="/contact" class="footer-link">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer Text Section (Centered) -->
+            <div class="footer-bottom">
+                <p>&copy; 2025 6 Points AI Generator</p>
+            </div>
+        </footer>
+    </main>
+</body>
+</html>
