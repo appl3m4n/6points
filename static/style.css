@@ -830,3 +830,39 @@ footer {
     gap: 20px;
     align-items: center;
 }
+
+.page-views {
+    background: linear-gradient(45deg,#3498db,#8e44ad); /* Gradient from blue to purple */
+    padding: 8px 12px;  /* Reduced padding */
+    border-radius: 5px;  /* Smaller border radius */
+    color: white;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    max-width: 200px;  /* Further reduced width */
+    margin: 8px auto;  /* Slightly reduced margin */
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);  /* Lighter shadow */
+    transform: scale(1);
+    transition: all 0.3s ease-in-out;
+}
+
+.page-views:hover {
+    transform: scale(1.05); /* Slightly enlarge on hover */
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.15); /* Slightly deeper shadow on hover */
+}
+
+.page-views p {
+    font-size: 0.9em; /* Smaller font size */
+    font-weight: 500;
+    margin: 0;
+    animation: fadeIn 1.5s ease-out;
+}
+
+/* Adding a subtle fade-in effect */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

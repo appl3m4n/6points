@@ -78,7 +78,25 @@ class LoginForm(FlaskForm):
 # Routes
 @app.route('/')
 def index():
-    return render_template('index_open.html')
+    # Connect to the database
+    connection = get_db_connection()
+    views = 0
+    try:
+        with connection.cursor() as cursor:
+            # Retrieve current views
+            cursor.execute("SELECT count FROM page_views WHERE id = 1")
+            result = cursor.fetchone()
+            if result:
+                views = result['count']
+            
+            # Increment the views count
+            cursor.execute("UPDATE page_views SET count = count + 1 WHERE id = 1")
+            connection.commit()
+    finally:
+        connection.close()
+
+    return render_template('index_open.html', views=views)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
