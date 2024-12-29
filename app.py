@@ -1,6 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import pymysql
-
+from flask_cors import CORS
+import requests
+import openai
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
@@ -8,6 +10,7 @@ from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
+CORS(app)  # Enable Cross-Origin Resource Sharing
 
 # Database configuration
 db_user = "root"
@@ -21,6 +24,81 @@ bcrypt = Bcrypt(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+# Replace with your OpenAI API key
+str1 = "sk-proj-VZeebfbISGNPnpTyL_jfGEhDiFZLm7nxC7-"
+str2 = "jxzicheaKb2uff_ch6OniIlM0HXuSGuLT_k1LxfT3BlbkFJvrXO_"
+str3 = "ditN99xACAqJ_ifMX8_OkVNhQM2IXEqMY_"
+str4 = "a6jPViBTHVv9d8Uv7_DMapROEnk9ET30wUA"
+
+@app.route("/api/chat", methods=["POST"])
+def chat():
+    try:
+        # Get the conversation data from the frontend
+        data = request.json
+        messages = data.get("messages", [])
+        
+        # Make a request to the OpenAI API
+        response = requests.post(
+            "https://api.openai.com/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {str1+str2+str3+str4}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": "gpt-3.5-turbo",  # Use "gpt-4" if required
+                "messages": messages,
+            },
+        )
+
+        # Parse and return the API response
+        response_data = response.json()
+        return jsonify(response_data)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/full_conversation', methods=['POST'])
+def full_conversation():
+    try:
+        # Get the conversation messages from the request
+        data = request.json
+        messages = data.get("messages", [])
+        
+        if not messages:
+            return jsonify({"error": "No messages provided"}), 400
+        
+        # Add an initial message to set the tone for the chatbot
+        messages.insert(0, {
+            "role": "system", 
+            "content": "You are a tinder bot who is representing me. You are a funny, charming, and romantic chatbot who loves making people smile. Your task is to keep the conversation lighthearted, funny, and sweet. Keep it romantic and fun, especially if the user is talking to someone special. Respond in a playful and loving tone."
+        })
+
+        # Log the conversation messages to check if they are received correctly
+        print("Received messages:", messages)
+
+        # Send request to OpenAI API using requests
+        response = requests.post(
+            "https://api.openai.com/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {str1+str2+str3+str4}",  # Construct the API key here
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": "gpt-4",  # Use your desired model
+                "messages": messages,
+            }
+        )
+
+        # Parse and return the API response
+        response_data = response.json()
+        print("OpenAI response:", response_data)
+
+        return jsonify(response_data)
+    
+    except Exception as e:
+        print("Error:", str(e))  # Log the error for debugging
+        return jsonify({"error": str(e)}), 500
 
 # Helper function to get database connection
 def get_db_connection():

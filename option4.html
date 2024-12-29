@@ -196,24 +196,8 @@
         .user-selection-button:hover {
             background-color: #ddd;
         }
-
-         /* Add a delete button style */
-         .delete-button {
-            background-color: transparent;
-            color: red;
-            border: none;
-            cursor: pointer;
-            font-size: 12px;
-            padding: 5px;
-            margin-left: 10px;
-        }
-
-        .delete-button:hover {
-            text-decoration: underline;
-        }
     </style>
 </head>
-
 <body>
     <header>
         <div id="title">
@@ -232,8 +216,6 @@
 
     <!-- Updated Chat Section -->
     <main>
-        
-
         <!-- Chat Name Section -->
         <div class="chat-name-container">
             <div id="chat-name" class="chat-name editable-chat-name" contenteditable="false">Chat Name</div>
@@ -254,7 +236,6 @@
             <!-- Message Input -->
             <div id="message-input" class="chat-input" contenteditable="true" oninput="enableSendButton()"></div>
             <button id="send-button" class="custom-button" onclick="addMessage()" disabled>Send</button>
-            <button id="send-conversation-button" class="custom-button" onclick="sendFullConversation()">Send Full Conversation</button>
         </footer>
     </main>
 
@@ -293,8 +274,8 @@
         let selectedUser = 'chat-user-one'; // Default to User 1
         const chatNameElement = document.getElementById('chat-name');
         let isEditingChatName = false;
-        let conversation = [];
 
+        // Handle user selection
         function selectUser(user) {
             selectedUser = user;
             document.querySelectorAll('.user-selection-button').forEach(button => {
@@ -309,7 +290,7 @@
         }
 
         // Add message to chat
-        async function addMessage() {
+        function addMessage() {
             const messageText = messageInput.innerText.trim();
             if (messageText === '') return;
 
@@ -317,33 +298,10 @@
             messageElement.className = `message ${selectedUser}`;
             messageElement.textContent = messageText;
 
-            // Create a delete button
-            const deleteButton = document.createElement('button');
-            deleteButton.className = 'delete-button';
-            deleteButton.textContent = 'Delete';
-            deleteButton.onclick = () => deleteMessage(messageElement, messageText); // Call the deleteMessage function when clicked
-
-            // Append delete button to message
-            messageElement.appendChild(deleteButton);
             chatContainer.appendChild(messageElement);
-
-            // Add the message to the conversation array
-            conversation.push({ role: selectedUser === 'chat-user-one' ? 'user' : 'assistant', content: messageText });
-
-            // Clear input and disable send button
-            messageInput.innerText = '';
-            sendButton.disabled = true;
-
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        // Delete a message
-        function deleteMessage(messageElement, messageText) {
-            // Remove the message from the DOM
-            messageElement.remove();
-
-            // Remove the message from the conversation array
-            conversation = conversation.filter(msg => msg.content !== messageText);
+            messageInput.innerText = ''; // Clear input after sending
+            sendButton.disabled = true; // Disable send button after sending
+            chatContainer.scrollTop = chatContainer.scrollHeight; // Auto-scroll to the bottom
         }
 
         // Enable the send button when there's input
@@ -365,42 +323,6 @@
                 chatNameElement.contentEditable = 'false';
                 chatNameElement.style.border = 'none';
                 chatNameElement.style.padding = '0';
-            }
-        }
-
-        async function sendFullConversation() {
-            if (conversation.length === 0) {
-                alert("No messages in the conversation to send.");
-                return;
-            }
-
-            try {
-                const response = await fetch("http://localhost:8080/api/full_conversation", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ messages: conversation }),
-                });
-
-                const data = await response.json();
-
-                if (data && data.choices && data.choices.length > 0) {
-                    const assistantMessage = data.choices[0].message.content;
-
-                    conversation.push({ role: "assistant", content: assistantMessage });
-
-                    const assistantElement = document.createElement('div');
-                    assistantElement.className = `message chat-user-one`;
-                    assistantElement.textContent = assistantMessage;
-
-                    chatContainer.appendChild(assistantElement);
-                    chatContainer.scrollTop = chatContainer.scrollHeight;
-                } else {
-                    alert("Error: Invalid response from the backend.");
-                }
-            } catch (error) {
-                alert("Failed to send the full conversation. Please try again.");
             }
         }
 
