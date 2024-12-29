@@ -85,7 +85,7 @@ def full_conversation():
                 "Content-Type": "application/json",
             },
             json={
-                "model": "gpt-4",  # Use your desired model
+                "model": "gpt-3.5-turbo",  # Use your desired model
                 "messages": messages,
             }
         )

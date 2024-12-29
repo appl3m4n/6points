@@ -287,125 +287,162 @@
     </footer>
 
     <script>
-        const chatContainer = document.getElementById('chat-container');
-        const messageInput = document.getElementById('message-input');
-        const sendButton = document.getElementById('send-button');
-        let selectedUser = 'chat-user-one'; // Default to User 1
-        const chatNameElement = document.getElementById('chat-name');
-        let isEditingChatName = false;
-        let conversation = [];
+    
+    const chatContainer = document.getElementById('chat-container');
+const messageInput = document.getElementById('message-input');
+const sendButton = document.getElementById('send-button');
+const chatNameElement = document.getElementById('chat-name');
 
-        function selectUser(user) {
-            selectedUser = user;
-            document.querySelectorAll('.user-selection-button').forEach(button => {
-                button.classList.remove('active');
-            });
+// Initialize selectedUser and conversation
+let selectedUser = localStorage.getItem('selectedUser') || 'chat-user-one'; // Default to 'You + ChatGPT'
+let conversation = JSON.parse(localStorage.getItem('conversation')) || [];  // Load conversation from localStorage
 
-            if (user === 'chat-user-one') {
-                document.getElementById('user-one-btn').classList.add('active');
-            } else {
-                document.getElementById('user-two-btn').classList.add('active');
-            }
+// Save conversation to localStorage
+function saveConversation() {
+    localStorage.setItem('conversation', JSON.stringify(conversation));
+    localStorage.setItem('selectedUser', selectedUser); // Store selected user
+}
+
+// Load the conversation from localStorage
+function loadConversation() {
+    conversation.forEach(({ role, content }) => {
+        createMessageElement(role, content);
+    });
+}
+
+// Function to create and append a message element
+function createMessageElement(role, content) {
+    const messageElement = document.createElement('div');
+    messageElement.className = `message ${role}`;
+    messageElement.textContent = content;
+
+    const deleteButton = document.createElement('button');
+    deleteButton.className = 'delete-button';
+    deleteButton.textContent = 'Delete';
+    deleteButton.onclick = () => deleteMessage(messageElement, content);
+
+    messageElement.appendChild(deleteButton);
+    chatContainer.appendChild(messageElement);
+
+    chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to bottom
+}
+
+// Function to handle user selection
+function selectUser(user) {
+    selectedUser = user;
+
+    document.querySelectorAll('.user-selection-button').forEach(button => {
+        button.classList.remove('active');
+    });
+
+    if (user === 'chat-user-one') {
+        document.getElementById('user-one-btn').classList.add('active');
+    } else {
+        document.getElementById('user-two-btn').classList.add('active');
+    }
+
+    saveConversation(); // Save selected user
+}
+
+// Function to add a message
+function addMessage() {
+    const messageText = messageInput.innerText.trim();
+    if (messageText === '') return;
+
+    // Create a new message element
+    createMessageElement(selectedUser, messageText);
+
+    // Add the message to the conversation array
+    conversation.push({ role: selectedUser, content: messageText });
+    saveConversation(); // Save updated conversation
+
+    // Clear the input and disable the send button
+    messageInput.innerText = '';
+    sendButton.disabled = true;
+}
+
+// Function to delete a message
+function deleteMessage(messageElement, messageText) {
+    messageElement.remove(); // Remove the message from the DOM
+
+    // Remove the message from the conversation array
+    conversation = conversation.filter(msg => msg.content !== messageText);
+    saveConversation(); // Save updated conversation
+}
+
+// Enable send button when input is not empty
+function enableSendButton() {
+    const messageText = messageInput.innerText.trim();
+    sendButton.disabled = messageText === '';
+}
+
+// Toggle editing for chat name
+function toggleEditChatName() {
+    let isEditing = chatNameElement.contentEditable === 'true';
+    chatNameElement.contentEditable = !isEditing;
+    if (isEditing) {
+        chatNameElement.style.border = 'none';
+        chatNameElement.style.padding = '0';
+    } else {
+        chatNameElement.style.border = '1px solid #4CAF50';
+        chatNameElement.style.padding = '5px';
+    }
+}
+
+// Send the full conversation to the backend
+// Send the full conversation to the backend
+async function sendFullConversation() {
+    if (conversation.length === 0) {
+        alert("No messages in the conversation to send.");
+        return;
+    }
+
+    // Map roles to OpenAI-supported roles
+    const mappedConversation = conversation.map(({ role, content }) => {
+        let mappedRole = role === "chat-user-one" ? "user" : "assistant"; // Map roles
+        return { role: mappedRole, content: content };
+    });
+
+    // Add the system message
+    const systemMessage = {
+        role: "system",
+        content: "You are a tinder bot who is representing me. You are a funny, charming, and romantic chatbot who loves making people smile. Your task is to keep the conversation lighthearted, funny, and sweet. Keep it romantic and fun, especially if the user is talking to someone special. Respond in a playful and loving tone.",
+    };
+
+    const payload = [systemMessage, ...mappedConversation];
+
+    try {
+        const response = await fetch("http://localhost:8080/api/full_conversation", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ messages: payload }),
+        });
+
+        const data = await response.json();
+
+        if (data && data.choices && data.choices.length > 0) {
+            const assistantMessage = data.choices[0].message.content;
+
+            // Add the assistant's response to the conversation
+            conversation.push({ role: "chat-user-one", content: assistantMessage });
+            createMessageElement("chat-user-one", assistantMessage);
+
+            saveConversation(); // Save updated conversation
+        } else {
+            alert("Error: Invalid response from the backend.");
         }
+    } catch (error) {
+        alert("Failed to send the full conversation. Please try again.");
+    }
+}
 
-        // Add message to chat
-        async function addMessage() {
-            const messageText = messageInput.innerText.trim();
-            if (messageText === '') return;
 
-            const messageElement = document.createElement('div');
-            messageElement.className = `message ${selectedUser}`;
-            messageElement.textContent = messageText;
+// Initialize with selected user and load conversation
+selectUser(selectedUser);
+loadConversation();
 
-            // Create a delete button
-            const deleteButton = document.createElement('button');
-            deleteButton.className = 'delete-button';
-            deleteButton.textContent = 'Delete';
-            deleteButton.onclick = () => deleteMessage(messageElement, messageText); // Call the deleteMessage function when clicked
-
-            // Append delete button to message
-            messageElement.appendChild(deleteButton);
-            chatContainer.appendChild(messageElement);
-
-            // Add the message to the conversation array
-            conversation.push({ role: selectedUser === 'chat-user-one' ? 'user' : 'assistant', content: messageText });
-
-            // Clear input and disable send button
-            messageInput.innerText = '';
-            sendButton.disabled = true;
-
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        // Delete a message
-        function deleteMessage(messageElement, messageText) {
-            // Remove the message from the DOM
-            messageElement.remove();
-
-            // Remove the message from the conversation array
-            conversation = conversation.filter(msg => msg.content !== messageText);
-        }
-
-        // Enable the send button when there's input
-        function enableSendButton() {
-            const messageText = messageInput.innerText.trim();
-            sendButton.disabled = messageText === '';
-        }
-
-        // Toggle edit mode for chat name
-        function toggleEditChatName() {
-            isEditingChatName = !isEditingChatName;
-
-            if (isEditingChatName) {
-                chatNameElement.contentEditable = 'true';
-                chatNameElement.focus();
-                chatNameElement.style.border = '1px solid #4CAF50';
-                chatNameElement.style.padding = '5px';
-            } else {
-                chatNameElement.contentEditable = 'false';
-                chatNameElement.style.border = 'none';
-                chatNameElement.style.padding = '0';
-            }
-        }
-
-        async function sendFullConversation() {
-            if (conversation.length === 0) {
-                alert("No messages in the conversation to send.");
-                return;
-            }
-
-            try {
-                const response = await fetch("http://localhost:8080/api/full_conversation", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ messages: conversation }),
-                });
-
-                const data = await response.json();
-
-                if (data && data.choices && data.choices.length > 0) {
-                    const assistantMessage = data.choices[0].message.content;
-
-                    conversation.push({ role: "assistant", content: assistantMessage });
-
-                    const assistantElement = document.createElement('div');
-                    assistantElement.className = `message chat-user-one`;
-                    assistantElement.textContent = assistantMessage;
-
-                    chatContainer.appendChild(assistantElement);
-                    chatContainer.scrollTop = chatContainer.scrollHeight;
-                } else {
-                    alert("Error: Invalid response from the backend.");
-                }
-            } catch (error) {
-                alert("Failed to send the full conversation. Please try again.");
-            }
-        }
-
-        // Initialize with User 1 selected
-        selectUser('chat-user-one');
     </script>
 </body>
 </html>
