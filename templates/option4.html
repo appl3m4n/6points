@@ -197,20 +197,36 @@
             background-color: #ddd;
         }
 
-         /* Add a delete button style */
-         .delete-button {
-            background-color: transparent;
-            color: red;
-            border: none;
-            cursor: pointer;
-            font-size: 12px;
-            padding: 5px;
-            margin-left: 10px;
-        }
+/* Improved delete button style */
+.delete-button {
+    background-color: #e0e0e0; /* Soft gray background */
+    color: #555; /* Neutral dark gray text */
+    border: none; /* Clean look without borders */
+    cursor: pointer; /* Indicate the button is clickable */
+    font-size: 14px; /* Readable font size */
+    padding: 8px 12px; /* Balanced padding for a sleek button */
+    margin-left: 10px; /* Space from other elements */
+    border-radius: 5px; /* Smooth rounded corners for a modern style */
+    transition: all 0.3s ease; /* Smooth transition effect for interactions */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for a touch of depth */
+}
 
-        .delete-button:hover {
-            text-decoration: underline;
-        }
+/* Hover effect for the delete button */
+.delete-button:hover {
+    background-color: #d6d6d6; /* Slightly darker gray for hover */
+    color: #333; /* Darker text color for emphasis */
+    transform: scale(1.05); /* Slight zoom effect */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+}
+
+/* Active/Pressed effect for the delete button */
+.delete-button:active {
+    background-color: #c0c0c0; /* Slightly darker pressed color */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduced shadow for pressed effect */
+    transform: scale(0.98); /* Slight press effect */
+}
+
+
     </style>
 </head>
 
@@ -254,7 +270,7 @@
             <!-- Message Input -->
             <div id="message-input" class="chat-input" contenteditable="true" oninput="enableSendButton()"></div>
             <button id="send-button" class="custom-button" onclick="addMessage()" disabled>Send</button>
-            <button id="send-conversation-button" class="custom-button" onclick="sendFullConversation()">Send Full Conversation</button>
+            <button id="send-conversation-button" class="custom-button" onclick="sendFullConversation()">Send to ChatGPT</button>
         </footer>
     </main>
 
@@ -318,7 +334,7 @@ function createMessageElement(role, content) {
 
     const deleteButton = document.createElement('button');
     deleteButton.className = 'delete-button';
-    deleteButton.textContent = 'Delete';
+    deleteButton.textContent = 'X';
     deleteButton.onclick = () => deleteMessage(messageElement, content);
 
     messageElement.appendChild(deleteButton);
