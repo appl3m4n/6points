@@ -267,6 +267,21 @@ def option3():
 def option4():
     return render_template('option4.html', current_user=current_user)
 
+@app.route('/chat1.html')
+@login_required
+def chat1():
+    return render_template('chat1.html', current_user=current_user)
+
+@app.route('/chat2.html')
+@login_required
+def chat2():
+    return render_template('chat2.html', current_user=current_user)
+
+@app.route('/chat3.html')
+@login_required
+def chat3():
+    return render_template('chat3.html', current_user=current_user)
+
 @app.route('/subscribe', methods=['POST'])
 @login_required
 def subscribe():

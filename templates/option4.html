@@ -6,227 +6,42 @@
     <link rel="stylesheet" href="/static/style.css">
     <title>6 Points AI Generator</title>
     <style>
-        /* Ensure the body and html take up the full height */
-        html, body {
-            height: 100%;
-            margin: 0;
+        .chat-container {
             display: flex;
             flex-direction: column;
-            font-family: Arial, sans-serif;
+            gap: 15px;
+            margin: 20px auto;
+            max-width: 400px;
         }
-    
-        /* Main content area should take all available space */
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-        }
-    
-        /* Chat container styles */
-        #chat-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            max-width: 600px;
-            min-width: 500px; /* Minimum width for the chat */
-            margin: auto;
-            padding: 10px;
+        .chat-window {
             border: 1px solid #ccc;
-            border-radius: 8px;
-            background-color: #fff;
-            overflow-y: auto; /* Enables vertical scrolling when content overflows */
-            height: 400px; /* Fixed height for the chat container */
-        }
-    
-        /* Chat bubbles */
-        .message {
-            padding: 10px 15px;
-            border-radius: 20px;
-            max-width: 70%;
-            word-wrap: break-word;
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-    
-        /* User 1 message styles (green, right aligned) */
-        .message.chat-user-one {
-            background-color: #4CAF50; /* Green */
-            color: white;
-            align-self: flex-end;  /* Align to right */
-            border-top-left-radius: 0;
-        }
-    
-        /* User 2 message styles (pink, left aligned) */
-        .message.chat-user-two {
-            background-color: #FF69B4; /* Pink */
-            color: white;
-            align-self: flex-start;  /* Align to left */
-            border-top-right-radius: 0;
-        }
-    
-        /* Input and footer section styling */
-        footer {
-            display: flex;
-            align-items: center;
-            padding: 15px 20px;
-            background-color: #fff;
-            border-top: 1px solid #ddd;
-            justify-content: flex-start;
-            gap: 10px;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-        }
-    
-        /* Custom Input Styling */
-        .chat-message-input,
-        .custom-button {
-            padding: 12px 16px;
-            font-size: 16px;
-            border-radius: 20px;
-            border: 1px solid #ddd;
-            background-color: #f9f9f9;
-        }
-    
-        .chat-message-input {
-            flex-grow: 1; /* Makes the input take up available space */
-            max-width: 60%;
-            background-color: #fff;
-            border: 1px solid #ddd;
-        }
-    
-        .custom-button {
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            border: none;
-        }
-    
-        .custom-button:hover {
-            background-color: #45a049;
-        }
-    
-        /* Ensuring the message list container is scrollable */
-        #chat-container {
-            overflow-y: auto; /* Enables vertical scroll */
-            margin-bottom: 20px;
-        }
-    
-        /* Styling the footer to have rounded corners */
-        footer .custom-select,
-        footer .chat-message-input,
-        footer .custom-button {
-            border-radius: 50px;
-        }
-    
-        /* Chat name container */
-        .chat-name-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
             padding: 15px;
-        }
-    
-        .chat-name {
-            font-size: 24px;
-            font-weight: bold;
-        }
-    
-        .edit-chat-name {
-            font-size: 16px;
-            background: none;
-            border: none;
-            color: #4CAF50;
-            cursor: pointer;
-        }
-    
-        .edit-chat-name:hover {
-            text-decoration: underline;
-        }
-    
-        /* Contenteditable element */
-        .editable-chat-name {
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-            border: none;
-            background-color: transparent;
-            padding: 0;
-            text-align: left;
-            outline: none;
-        }
-    
-        /* Contenteditable for message input */
-        .chat-input {
-            width: 100%;
-            min-height: 40px;
-            padding: 12px 16px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
+            height: 80px;
             background-color: #f9f9f9;
-            box-sizing: border-box;
-            overflow-y: auto;
-            white-space: pre-wrap; /* Allows for multi-line input */
-        }
-    
-        .chat-input:empty:before {
-            content: "Type a message...";
-            color: #aaa;
-        }
-    
-        /* User selection buttons */
-        .user-selection-button {
-            background-color: #f1f1f1;
-            color: #333;
-            padding: 10px 15px;
-            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            border: 1px solid #ddd;
+            transition: background-color 0.3s;
         }
-    
-        .user-selection-button.active {
-            background-color: #4CAF50;
-            color: white;
+        .chat-window:hover {
+            background-color: #e9e9e9;
         }
-    
-        /* Button hover effect */
-        .user-selection-button:hover {
-            background-color: #ddd;
+        .chat-window a {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            width: 100%;
+            height: 100%;
         }
-
-/* Improved delete button style */
-.delete-button {
-    background-color: #e0e0e0; /* Soft gray background */
-    color: #555; /* Neutral dark gray text */
-    border: none; /* Clean look without borders */
-    cursor: pointer; /* Indicate the button is clickable */
-    font-size: 14px; /* Readable font size */
-    padding: 8px 12px; /* Balanced padding for a sleek button */
-    margin-left: 10px; /* Space from other elements */
-    border-radius: 5px; /* Smooth rounded corners for a modern style */
-    transition: all 0.3s ease; /* Smooth transition effect for interactions */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for a touch of depth */
-}
-
-/* Hover effect for the delete button */
-.delete-button:hover {
-    background-color: #d6d6d6; /* Slightly darker gray for hover */
-    color: #333; /* Darker text color for emphasis */
-    transform: scale(1.05); /* Slight zoom effect */
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
-}
-
-/* Active/Pressed effect for the delete button */
-.delete-button:active {
-    background-color: #c0c0c0; /* Slightly darker pressed color */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduced shadow for pressed effect */
-    transform: scale(0.98); /* Slight press effect */
-}
-
-
+        .login-message {
+            text-align: center;
+            margin-top: 50px;
+            font-size: 18px;
+            color: #555;
+        }
     </style>
 </head>
 
@@ -248,30 +63,23 @@
 
     <!-- Updated Chat Section -->
     <main>
-        
-
-        <!-- Chat Name Section -->
-        <div class="chat-name-container">
-            <div id="chat-name" class="chat-name editable-chat-name" contenteditable="false">Chat Name</div>
-            <button class="edit-chat-name" onclick="toggleEditChatName()">Edit</button>
-        </div>
-
-        <!-- Chat Container -->
-        <div id="chat-container">
-            <!-- Messages will appear here -->
-        </div>
-
-        <!-- Chat Input and Controls -->
-        <footer>
-            <!-- User Selection Buttons -->
-            <button class="user-selection-button" id="user-one-btn" onclick="selectUser('chat-user-one')">You + ChatGPT</button>
-            <button class="user-selection-button" id="user-two-btn" onclick="selectUser('chat-user-two')">Your crush</button>
-
-            <!-- Message Input -->
-            <div id="message-input" class="chat-input" contenteditable="true" oninput="enableSendButton()"></div>
-            <button id="send-button" class="custom-button" onclick="addMessage()" disabled>Send</button>
-            <button id="send-conversation-button" class="custom-button" onclick="sendFullConversation()">Send to ChatGPT</button>
-        </footer>
+        {% if current_user.is_authenticated %}
+            <div class="chat-container">
+                <div class="chat-window">
+                    <a href="/chat1.html">Chat Window 1</a>
+                </div>
+                <div class="chat-window">
+                    <a href="/chat2.html">Chat Window 2</a>
+                </div>
+                <div class="chat-window">
+                    <a href="/chat3.html">Chat Window 3</a>
+                </div>
+            </div>
+        {% else %}
+            <div class="login-message">
+                <p>You need to log in to access the chat feature. Please <a href="/login">log in</a>.</p>
+            </div>
+        {% endif %}
     </main>
 
     <!-- Footer Section -->
@@ -302,163 +110,5 @@
         </div>
     </footer>
 
-    <script>
-    
-    const chatContainer = document.getElementById('chat-container');
-const messageInput = document.getElementById('message-input');
-const sendButton = document.getElementById('send-button');
-const chatNameElement = document.getElementById('chat-name');
-
-// Initialize selectedUser and conversation
-let selectedUser = localStorage.getItem('selectedUser') || 'chat-user-one'; // Default to 'You + ChatGPT'
-let conversation = JSON.parse(localStorage.getItem('conversation')) || [];  // Load conversation from localStorage
-
-// Save conversation to localStorage
-function saveConversation() {
-    localStorage.setItem('conversation', JSON.stringify(conversation));
-    localStorage.setItem('selectedUser', selectedUser); // Store selected user
-}
-
-// Load the conversation from localStorage
-function loadConversation() {
-    conversation.forEach(({ role, content }) => {
-        createMessageElement(role, content);
-    });
-}
-
-// Function to create and append a message element
-function createMessageElement(role, content) {
-    const messageElement = document.createElement('div');
-    messageElement.className = `message ${role}`;
-    messageElement.textContent = content;
-
-    const deleteButton = document.createElement('button');
-    deleteButton.className = 'delete-button';
-    deleteButton.textContent = 'X';
-    deleteButton.onclick = () => deleteMessage(messageElement, content);
-
-    messageElement.appendChild(deleteButton);
-    chatContainer.appendChild(messageElement);
-
-    chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to bottom
-}
-
-// Function to handle user selection
-function selectUser(user) {
-    selectedUser = user;
-
-    document.querySelectorAll('.user-selection-button').forEach(button => {
-        button.classList.remove('active');
-    });
-
-    if (user === 'chat-user-one') {
-        document.getElementById('user-one-btn').classList.add('active');
-    } else {
-        document.getElementById('user-two-btn').classList.add('active');
-    }
-
-    saveConversation(); // Save selected user
-}
-
-// Function to add a message
-function addMessage() {
-    const messageText = messageInput.innerText.trim();
-    if (messageText === '') return;
-
-    // Create a new message element
-    createMessageElement(selectedUser, messageText);
-
-    // Add the message to the conversation array
-    conversation.push({ role: selectedUser, content: messageText });
-    saveConversation(); // Save updated conversation
-
-    // Clear the input and disable the send button
-    messageInput.innerText = '';
-    sendButton.disabled = true;
-}
-
-// Function to delete a message
-function deleteMessage(messageElement, messageText) {
-    messageElement.remove(); // Remove the message from the DOM
-
-    // Remove the message from the conversation array
-    conversation = conversation.filter(msg => msg.content !== messageText);
-    saveConversation(); // Save updated conversation
-}
-
-// Enable send button when input is not empty
-function enableSendButton() {
-    const messageText = messageInput.innerText.trim();
-    sendButton.disabled = messageText === '';
-}
-
-// Toggle editing for chat name
-function toggleEditChatName() {
-    let isEditing = chatNameElement.contentEditable === 'true';
-    chatNameElement.contentEditable = !isEditing;
-    if (isEditing) {
-        chatNameElement.style.border = 'none';
-        chatNameElement.style.padding = '0';
-    } else {
-        chatNameElement.style.border = '1px solid #4CAF50';
-        chatNameElement.style.padding = '5px';
-    }
-}
-
-// Send the full conversation to the backend
-// Send the full conversation to the backend
-async function sendFullConversation() {
-    if (conversation.length === 0) {
-        alert("No messages in the conversation to send.");
-        return;
-    }
-
-    // Map roles to OpenAI-supported roles
-    const mappedConversation = conversation.map(({ role, content }) => {
-        let mappedRole = role === "chat-user-one" ? "user" : "assistant"; // Map roles
-        return { role: mappedRole, content: content };
-    });
-
-    // Add the system message
-    const systemMessage = {
-        role: "system",
-        content: "You are a tinder bot who is representing me. You are a funny, charming, and romantic chatbot who loves making people smile. Your task is to keep the conversation lighthearted, funny, and sweet. Keep it romantic and fun, especially if the user is talking to someone special. Respond in a playful and loving tone.",
-    };
-
-    const payload = [systemMessage, ...mappedConversation];
-
-    try {
-        const response = await fetch("http://localhost:8080/api/full_conversation", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ messages: payload }),
-        });
-
-        const data = await response.json();
-
-        if (data && data.choices && data.choices.length > 0) {
-            const assistantMessage = data.choices[0].message.content;
-
-            // Add the assistant's response to the conversation
-            conversation.push({ role: "chat-user-one", content: assistantMessage });
-            createMessageElement("chat-user-one", assistantMessage);
-
-            saveConversation(); // Save updated conversation
-        } else {
-            alert("Error: Invalid response from the backend.");
-        }
-    } catch (error) {
-        alert("Failed to send the full conversation. Please try again.");
-    }
-}
-
-
-// Initialize with selected user and load conversation
-selectUser(selectedUser);
-loadConversation();
-
-    </script>
 </body>
 </html>

@@ -196,8 +196,40 @@
         .user-selection-button:hover {
             background-color: #ddd;
         }
+
+/* Improved delete button style */
+.delete-button {
+    background-color: #e0e0e0; /* Soft gray background */
+    color: #555; /* Neutral dark gray text */
+    border: none; /* Clean look without borders */
+    cursor: pointer; /* Indicate the button is clickable */
+    font-size: 14px; /* Readable font size */
+    padding: 8px 12px; /* Balanced padding for a sleek button */
+    margin-left: 10px; /* Space from other elements */
+    border-radius: 5px; /* Smooth rounded corners for a modern style */
+    transition: all 0.3s ease; /* Smooth transition effect for interactions */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for a touch of depth */
+}
+
+/* Hover effect for the delete button */
+.delete-button:hover {
+    background-color: #d6d6d6; /* Slightly darker gray for hover */
+    color: #333; /* Darker text color for emphasis */
+    transform: scale(1.05); /* Slight zoom effect */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+}
+
+/* Active/Pressed effect for the delete button */
+.delete-button:active {
+    background-color: #c0c0c0; /* Slightly darker pressed color */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduced shadow for pressed effect */
+    transform: scale(0.98); /* Slight press effect */
+}
+
+
     </style>
 </head>
+
 <body>
     <header>
         <div id="title">
@@ -216,6 +248,8 @@
 
     <!-- Updated Chat Section -->
     <main>
+        
+
         <!-- Chat Name Section -->
         <div class="chat-name-container">
             <div id="chat-name" class="chat-name editable-chat-name" contenteditable="false">Chat Name</div>
@@ -236,6 +270,7 @@
             <!-- Message Input -->
             <div id="message-input" class="chat-input" contenteditable="true" oninput="enableSendButton()"></div>
             <button id="send-button" class="custom-button" onclick="addMessage()" disabled>Send</button>
+            <button id="send-conversation-button" class="custom-button" onclick="sendFullConversation()">Send to ChatGPT</button>
         </footer>
     </main>
 
@@ -268,66 +303,170 @@
     </footer>
 
     <script>
-        const chatContainer = document.getElementById('chat-container');
-        const messageInput = document.getElementById('message-input');
-        const sendButton = document.getElementById('send-button');
-        let selectedUser = 'chat-user-one'; // Default to User 1
-        const chatNameElement = document.getElementById('chat-name');
-        let isEditingChatName = false;
+const chatContainer = document.getElementById('chat-container');
+const messageInput = document.getElementById('message-input');
+const sendButton = document.getElementById('send-button');
+const chatNameElement = document.getElementById('chat-name');
 
-        // Handle user selection
-        function selectUser(user) {
-            selectedUser = user;
-            document.querySelectorAll('.user-selection-button').forEach(button => {
-                button.classList.remove('active');
-            });
+// Initialize selectedUser and conversation
+let selectedUser = localStorage.getItem('selectedUser') || 'chat-user-one'; // Default to 'You + ChatGPT'
+let conversation = JSON.parse(localStorage.getItem('conversation_chat3')) || [];  // Load conversation from localStorage
 
-            if (user === 'chat-user-one') {
-                document.getElementById('user-one-btn').classList.add('active');
-            } else {
-                document.getElementById('user-two-btn').classList.add('active');
-            }
+// Save conversation to localStorage
+function saveConversation() {
+    localStorage.setItem('conversation_chat3', JSON.stringify(conversation));
+    localStorage.setItem('selectedUser', selectedUser); // Store selected user
+}
+
+// Load the conversation from localStorage
+function loadConversation() {
+    conversation.forEach(({ role, content }) => {
+        createMessageElement(role, content);
+    });
+}
+
+// Function to create and append a message element
+function createMessageElement(role, content) {
+    const messageElement = document.createElement('div');
+    messageElement.className = `message ${role}`;
+    messageElement.textContent = content;
+
+    const deleteButton = document.createElement('button');
+    deleteButton.className = 'delete-button';
+    deleteButton.textContent = 'X';
+    deleteButton.onclick = () => deleteMessage(messageElement, content);
+
+    messageElement.appendChild(deleteButton);
+    chatContainer.appendChild(messageElement);
+
+    chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to bottom
+}
+
+// Function to handle user selection
+function selectUser(user) {
+    selectedUser = user;
+
+    document.querySelectorAll('.user-selection-button').forEach(button => {
+        button.classList.remove('active');
+    });
+
+    if (user === 'chat-user-one') {
+        document.getElementById('user-one-btn').classList.add('active');
+    } else {
+        document.getElementById('user-two-btn').classList.add('active');
+    }
+
+    saveConversation(); // Save selected user
+}
+
+// Function to add a message
+function addMessage() {
+    const messageText = messageInput.innerText.trim();
+    if (messageText === '') return;
+
+    // Create a new message element
+    createMessageElement(selectedUser, messageText);
+
+    // Add the message to the conversation array
+    conversation.push({ role: selectedUser, content: messageText });
+    saveConversation(); // Save updated conversation
+
+    // Clear the input and disable the send button
+    messageInput.innerText = '';
+    sendButton.disabled = true;
+}
+
+// Function to delete a message
+function deleteMessage(messageElement, messageText) {
+    messageElement.remove(); // Remove the message from the DOM
+
+    // Remove the message from the conversation array
+    conversation = conversation.filter(msg => msg.content !== messageText);
+    saveConversation(); // Save updated conversation
+}
+
+// Enable send button when input is not empty
+function enableSendButton() {
+    const messageText = messageInput.innerText.trim();
+    sendButton.disabled = messageText === '';
+}
+
+// Load chat name from localStorage
+function loadChatName() {
+    const savedChatName = localStorage.getItem('chatName');
+    if (savedChatName) {
+        chatNameElement.textContent = savedChatName;
+    }
+}
+
+// Save chat name to localStorage
+function saveChatName() {
+    const chatName = chatNameElement.textContent.trim();
+    localStorage.setItem('chatName', chatName);
+}
+
+// Toggle editing for chat name and save the updated name
+function toggleEditChatName() {
+    let isEditing = chatNameElement.contentEditable === 'true';
+    chatNameElement.contentEditable = !isEditing;
+    if (isEditing) {
+        chatNameElement.style.border = 'none';
+        chatNameElement.style.padding = '0';
+        saveChatName(); // Save the chat name when editing is finished
+    } else {
+        chatNameElement.style.border = '1px solid #4CAF50';
+        chatNameElement.style.padding = '5px';
+    }
+}
+
+// Send the full conversation to the backend
+async function sendFullConversation() {
+    if (conversation.length === 0) {
+        alert("No messages in the conversation to send.");
+        return;
+    }
+
+    const mappedConversation = conversation.map(({ role, content }) => {
+        let mappedRole = role === "chat-user-one" ? "user" : "assistant"; // Map roles
+        return { role: mappedRole, content: content };
+    });
+
+    const systemMessage = {
+        role: "system",
+        content: "You are a tinder bot who is representing me...",
+    };
+
+    const payload = [systemMessage, ...mappedConversation];
+
+    try {
+        const response = await fetch("http://localhost:8080/api/full_conversation", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ messages: payload }),
+        });
+
+        const data = await response.json();
+        if (data && data.choices && data.choices.length > 0) {
+            const assistantMessage = data.choices[0].message.content;
+
+            conversation.push({ role: "chat-user-one", content: assistantMessage });
+            createMessageElement("chat-user-one", assistantMessage);
+            saveConversation();
+        } else {
+            alert("Error: Invalid response from the backend.");
         }
+    } catch (error) {
+        alert("Failed to send the full conversation. Please try again.");
+    }
+}
 
-        // Add message to chat
-        function addMessage() {
-            const messageText = messageInput.innerText.trim();
-            if (messageText === '') return;
+// Initialize chat name and conversation on page load
+loadChatName();
+selectUser(selectedUser);
+loadConversation();
 
-            const messageElement = document.createElement('div');
-            messageElement.className = `message ${selectedUser}`;
-            messageElement.textContent = messageText;
-
-            chatContainer.appendChild(messageElement);
-            messageInput.innerText = ''; // Clear input after sending
-            sendButton.disabled = true; // Disable send button after sending
-            chatContainer.scrollTop = chatContainer.scrollHeight; // Auto-scroll to the bottom
-        }
-
-        // Enable the send button when there's input
-        function enableSendButton() {
-            const messageText = messageInput.innerText.trim();
-            sendButton.disabled = messageText === '';
-        }
-
-        // Toggle edit mode for chat name
-        function toggleEditChatName() {
-            isEditingChatName = !isEditingChatName;
-
-            if (isEditingChatName) {
-                chatNameElement.contentEditable = 'true';
-                chatNameElement.focus();
-                chatNameElement.style.border = '1px solid #4CAF50';
-                chatNameElement.style.padding = '5px';
-            } else {
-                chatNameElement.contentEditable = 'false';
-                chatNameElement.style.border = 'none';
-                chatNameElement.style.padding = '0';
-            }
-        }
-
-        // Initialize with User 1 selected
-        selectUser('chat-user-one');
     </script>
 </body>
 </html>
