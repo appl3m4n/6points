@@ -57,74 +57,31 @@ def chat():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-    
-@app.route('/create_chat', methods=['POST'])
-@login_required
-def create_chat():
-    # Get the chat name from the request (this could be a random name or a user-provided name)
-    chat_name = request.json.get('name', 'New Chat')
-
-    connection = get_db_connection()
-    try:
-        with connection.cursor() as cursor:
-            # Insert the new chat into the chats table
-            cursor.execute("INSERT INTO chats (name) VALUES (%s)", (chat_name,))
-            connection.commit()
-
-            # Get the ID of the newly created chat
-            cursor.execute("SELECT id FROM chats WHERE name = %s", (chat_name,))
-            chat_id = cursor.fetchone()['id']
-
-        return jsonify({"chat_id": chat_id, "message": "Chat created successfully"})
-
-    except Exception as e:
-        print("Error:", e)
-        return jsonify({"error": str(e)}), 500
-    finally:
-        connection.close()
-
 
 @app.route('/api/full_conversation', methods=['POST'])
-@login_required
 def full_conversation():
     try:
-        # Get the conversation data from the request
+        # Get the conversation messages from the request
         data = request.json
         messages = data.get("messages", [])
-        chat_id = data.get("chat_id")  # Get the chat ID from the request
         
         if not messages:
             return jsonify({"error": "No messages provided"}), 400
+        
+        # Add an initial message to set the tone for the chatbot
+        messages.insert(0, {
+            "role": "system", 
+            "content": "You are a tinder bot who is representing me. You are a funny, charming, and romantic chatbot who loves making people smile. Your task is to keep the conversation lighthearted, funny, and sweet. Keep it romantic and fun, especially if the user is talking to someone special. Respond in a playful and loving tone."
+        })
 
-        if not chat_id:
-            return jsonify({"error": "Chat ID is required"}), 400
+        # Log the conversation messages to check if they are received correctly
+        print("Received messages:", messages)
 
-        # Save user and assistant messages into the database
-        user_id = current_user.id
-
-        # Save messages into the database
-        connection = get_db_connection()
-        try:
-            with connection.cursor() as cursor:
-                for message in messages:
-                    role = message.get('role')
-                    content = message.get('content')
-
-                    # Insert user or assistant message into the conversation table
-                    cursor.execute(
-                        "INSERT INTO conversations (chat_id, role, content) VALUES (%s, %s, %s)",
-                        (chat_id, role, content)
-                    )
-            connection.commit()
-
-        finally:
-            connection.close()
-
-        # Send request to OpenAI API (same as before)
+        # Send request to OpenAI API using requests
         response = requests.post(
             "https://api.openai.com/v1/chat/completions",
             headers={
-                "Authorization": f"Bearer {str1+str2+str3+str4}",  # API key for OpenAI
+                "Authorization": f"Bearer {str1+str2+str3+str4}",  # Construct the API key here
                 "Content-Type": "application/json",
             },
             json={
@@ -135,47 +92,13 @@ def full_conversation():
 
         # Parse and return the API response
         response_data = response.json()
-
-        # Save assistant's response in the database
-        assistant_message = response_data['choices'][0]['message']['content']
-        connection = get_db_connection()
-        try:
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    "INSERT INTO conversations (chat_id, role, content) VALUES (%s, %s, %s)",
-                    (chat_id, 'chat-user-two', assistant_message)
-                )
-            connection.commit()
-
-        finally:
-            connection.close()
+        print("OpenAI response:", response_data)
 
         return jsonify(response_data)
-
+    
     except Exception as e:
         print("Error:", str(e))  # Log the error for debugging
         return jsonify({"error": str(e)}), 500
-
-@app.route('/api/chat_history/<int:chat_id>', methods=['GET'])
-@login_required
-def chat_history(chat_id):
-    try:
-        # Retrieve the conversation messages for a given chat_id
-        connection = get_db_connection()
-        try:
-            with connection.cursor() as cursor:
-                cursor.execute("SELECT role, content, timestamp FROM conversations WHERE chat_id = %s ORDER BY timestamp ASC", (chat_id,))
-                chat_messages = cursor.fetchall()
-
-        finally:
-            connection.close()
-
-        return jsonify(chat_messages)
-
-    except Exception as e:
-        print("Error:", str(e))
-        return jsonify({"error": str(e)}), 500
-
 
 # Helper function to get database connection
 def get_db_connection():
