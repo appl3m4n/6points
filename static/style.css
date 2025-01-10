@@ -786,3 +786,38 @@ footer {
         opacity: 1;
     }
 }
+
+.login-btn {
+    font-size: 16px;
+    padding: 12px 24px;
+    background-color: #3498db; /* New background color */
+    color: #fff;
+    border: none;
+    border-radius: 30px; /* Makes the corners rounded */
+    text-decoration: none;
+    display: flex; /* Use flex to align text and image */
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Space between image and text */
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Light shadow */
+    transition: all 0.3s ease; /* Smooth hover transition */
+}
+
+.login-btn:hover {
+    background-color: #3498db; /* Darker shade of the background color on hover */
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+}
+
+.login-btn img {
+    width: 30px; /* Size of the image */
+    height: auto;
+    border-radius: 50%; /* If you want the image to be circular */
+}
+
+.login-btn span {
+    font-size: 14px; /* Smaller text size */
+}
+
+
